@@ -1,15 +1,17 @@
-# import collections
-#
-# class Solution(object):
-#     def sortColors(self, nums): # using counter version
-#         count = collections.Counter(nums)
-#         index = 0
-#         for i in range(3):
-#             for _ in range(count[i]):
-#                 nums[index] = i
-#                 index += 1
-
 import collections
+
+# choose one
+
+class Solution(object):
+    def sortColors(self, nums): # using counter version
+        count = collections.Counter(nums)
+        index = 0
+        for i in range(3):
+            for _ in range(count[i]):
+                nums[index] = i
+                index += 1
+
+
 
 class Solution(object):
     def sortColors(self, nums): # using pointer, 답지 참고함..
