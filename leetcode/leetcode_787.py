@@ -1,8 +1,9 @@
 import collections
+import heapq
 from typing import List
 
 
-class Solution:
+class Solution: # Wrong code
     def __init__(self):
         self.travel = collections.defaultdict(list)
         self.min_value = -1
@@ -30,3 +31,28 @@ class Solution:
         dfs(0, src, 0, [src])
 
         return self.min_value
+
+
+class Solution: #Right code...
+    def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, K: int) -> int:
+        graph = collections.defaultdict(dict)
+        heap = [(0, src, K + 1)]
+        visits = [0] * n
+
+        for start, end, cost in flights:
+            graph[start][end] = cost
+
+        while heap:
+            cost, start, end = heapq.heappop(heap)
+
+            if start == dst:
+                return cost
+            if visits[start] >= end:
+                continue
+
+            visits[start] = end
+
+            for new_end, new_cost in graph[start].items():
+                heapq.heappush(heap, (cost + new_cost, new_end, end - 1))
+
+        return -1
