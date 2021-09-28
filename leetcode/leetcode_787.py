@@ -56,3 +56,4 @@ class Solution: #Right code...
                 heapq.heappush(heap, (cost + new_cost, new_end, end - 1))
 
         return -1
+
