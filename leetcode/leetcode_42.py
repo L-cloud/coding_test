@@ -15,11 +15,9 @@ class Solution:
                     while stack:
                         water += max_value - stack.pop()
                     max_value = h
-                stack.append(h)
-            else: # stack == [] or stack[-1] >= h
-                if stack == []:
-                    max_value = h
-                stack.append(h)
+            if stack == []:
+                max_value = h
+            stack.append(h)
         return water
 
 
