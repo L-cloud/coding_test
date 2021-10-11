@@ -9,7 +9,6 @@ def solution(numbers):
     for key in sorted(dic.keys(), reverse=True):
         if dic[key] != []:
             num = sorted(dic[key], key=lambda x: (func(x), len(x)), reverse=True)
-            print(num)
             for n in num:
                 answer += n
 
