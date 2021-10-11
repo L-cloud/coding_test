@@ -19,7 +19,6 @@ class Solution:
             else:  # l1 > l2
                 output.next = ListNode(val=l2.val)
                 output, l2 = output.next, l2.next
-            print("l1 = ", l1, "l2 = ", l2, head)
         while l1:
             output.next = ListNode(val=l1.val)
             output, l1 = output.next, l1.next
