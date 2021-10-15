@@ -1,6 +1,7 @@
 import re
 import collections
 
+
 def solution(numbers):
     dic, numbers = collections.defaultdict(list), list(map(str, numbers))
     answer = ""
@@ -8,7 +9,7 @@ def solution(numbers):
         dic[num[0]].append(num)
     for key in sorted(dic.keys(), reverse=True):
         if dic[key] != []:
-            num = sorted(dic[key], key=lambda x: (func(x), len(x)), reverse=True)
+            num = sorted(dic[key], key=lambda x: (func(x), x[-1]), reverse=True)
             for n in num:
                 answer += n
 
