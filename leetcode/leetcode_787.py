@@ -57,3 +57,27 @@ class Solution: #Right code...
 
         return -1
 
+
+
+class Solution:
+    def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+        flight, h = collections.defaultdict(list), [(0, src, -1)]
+        for src_, dst_, price in flights:
+            flight[src_].append((price, dst_))  # key = src, value = [price,dst]
+        visited = {}
+        while h:
+            price, node, via = heapq.heappop(h)
+            if node == dst:
+                return price
+            if via < k:
+                for price_, dst_ in flight[node]:
+                    price_ += price
+                    if dst_ not in visited:
+                        visited[dst_] = [price_, via + 1]
+                        heapq.heappush(h, (price_, dst_, via + 1))
+                    elif price_ < visited[dst_][0] or via + 1 < visited[dst_][1]:
+                        if price_ < visited[dst_][0] and via + 1 < visited[dst_][1]:
+                            visited[dst_] = [price_, via + 1]
+                        heapq.heappush(h, (price_, dst_, via + 1))
+
+        return -1
