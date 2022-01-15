@@ -1,6 +1,38 @@
 import re
 import collections
 
+import collections
+from typing import List
+def solution(numbers:List[int]) -> str:
+    numbers = list(map(str,numbers))
+    numbers = division(numbers)
+    answer = "".join(numbers)
+    if answer[0] == '0':
+        return '0'
+    return answer
+
+def division(numbers:List[int]) -> str:
+    if len(numbers) < 2:
+        return numbers
+    left_num = division(numbers[:len(numbers) // 2])
+    right_num = division(numbers[len(numbers) // 2 :])
+    output,i, j = [],0, 0 
+    while i < len(left_num) and j < len(right_num):
+        if left_num[i] + right_num[j] < right_num[j] + left_num[i] :
+            output.append(right_num[j])
+            j += 1
+        else: # left is bigger
+            output.append(left_num[i])
+            i += 1
+    while i < len(left_num):
+        output.append(left_num[i])
+        i += 1
+    while j < len(right_num):
+        output.append(right_num[j])
+        j += 1
+    return output
+
+
 
 def solution(numbers):
     dic, numbers = collections.defaultdict(list), list(map(str, numbers))
