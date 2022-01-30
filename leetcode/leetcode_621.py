@@ -18,3 +18,17 @@ class Solution(object):
                 return time - (n + 1 - task)
 
 
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        count = collections.Counter(tasks)
+        time = 0
+        while count:
+            pass_num = 0
+            for key,value in count.most_common(n + 1):
+                count[key] -= 1
+                time += 1
+                pass_num += 1
+            count += collections.Counter()
+            if count:
+                time += n + 1 - pass_num
+        return time

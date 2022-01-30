@@ -12,3 +12,29 @@ class Solution(object):
                         output.append(eval(str(l) + ex + str(r)))
 
         return output
+
+
+# version2
+import operator
+class Solution:
+    ops = {
+        '+' : operator.add,
+        '-' : operator.sub,
+        '*' : operator.mul,
+    }
+
+    def diffWaysToCompute(self, expression: str) -> List[int]:
+        check = False # if문 들어갔나 확인 용
+        output = []
+        for i,e in enumerate(expression):
+            if e in self.ops:
+                check = True
+                a_list = self.diffWaysToCompute(expression[:i])
+                b_list = self.diffWaysToCompute(expression[i+1:])
+                for a in a_list:
+                    for b in b_list:
+                        output.append(self.ops[e](a,b))
+
+        if not check:
+            return [int(expression)]
+        return output
