@@ -14,7 +14,7 @@ for i in sequence:
         print_stack.append("-")
         continue
     print('NO')
-    flag = False
-if flag:
-    for signal in print_stack:
-        print(signal)
+    exit()
+
+for signal in print_stack:
+    print(signal)
