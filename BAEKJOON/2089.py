@@ -1,26 +1,16 @@
 import sys
 
+num = int(sys.stdin.readline())
+power_of_num = 0
+if num < 0:
+    while (-2) ** power_of_num > num:
+        power_of_num += 1
 
-a, b = map(int, sys.stdin.readline().split())
+elif 0 < num:
+    while (-2) ** power_of_num < num:
+        power_of_num += 1
+else:
+    print(0)
+    exit()
 
-b = min(b, a - b)
-
-two, five = 0, 0
-
-for num in range(a, b, -1):
-    while num % 2 == 0:
-        two += 1
-        num //= 2
-    while num % 5 == 0:
-        five += 1
-        num //= 5
-
-for num in range(b, 1, -1):
-    while num % 2 == 0:
-        two -= 1
-        num //= 2
-    while num % 5 == 0:
-        five -= 1
-        num //= 5
-
-print(min(two, five))
+num_list = [0] * (power_of_num + 1)
