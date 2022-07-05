@@ -3,7 +3,7 @@ import sys
 A = sys.stdin.readline().rstrip()
 B = sys.stdin.readline().rstrip()
 
-dp = [0 for _ in range(len(A + 1))]
+dp = [0 for _ in range(len(A) + 1)]
 for v1 in B:
     cnt = 0
     for i2,v2 in enumerate(A):
