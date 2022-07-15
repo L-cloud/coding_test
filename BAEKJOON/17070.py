@@ -1,37 +1,27 @@
-import sys,collections
+import sys
 input = sys.stdin.readline
-def width(i:int, j:int) -> bool: #가로
+def width(i:int, j:int) -> None: #가로
     if 0< j+1 < N and not matrix[i][j+1]:
-        q.appendleft([i,j+1,0])
-        return True
-    return False
-def length(i:int, j:int) -> bool: # 세로
+        prev = sum(dp[i][j]) -dp[i][j][1] if sum(dp[i][j]) - dp[i][j][1] else 1
+        dp[i][j+1][0] += prev 
+def length(i:int, j:int) -> None: # 세로
     if 0<= i +1 < N and not matrix[i + 1][j]:
-        q.appendleft([i+1,j,1])
-        return True
-    return False
-def diagonal(i:int, j:int) -> bool: # 대각선
+        prev = sum(dp[i][j]) - dp[i][j][0] if sum(dp[i][j]) -dp[i][j][0] else 1
+        dp[i+1][j][1] += prev  
+def diagonal(i:int, j:int) -> None: # 대각선
     if 0< i+1 < N and 0 < j+1 < N and not matrix[i][j+1] and not matrix[i+1][j] and not matrix[i+1][j+1]:
-        q.appendleft([i+1,j+1,2])
-        return True
-    return False 
-def for_index(i:int, j:int) -> bool: # 함수 인덱스 맞추기 위해서
-    return False
+        prev = sum(dp[i][j]) if sum(dp[i][j])  else 1
+        dp[i+1][j+1][2] += prev  
 N = int(input())
 matrix = [list(map(int,input().split()))for _ in range(N)]
-func = {0:[width,for_index,diagonal], 1:[for_index,length,diagonal], 2:[width,length,diagonal]}
-cnt = 0
-q = collections.deque([[0,1,0]])
-while q:
-    for _ in range(len(q)):
-        i,j,k = q.pop()
-        if i == j == N-1:
-            cnt += 1
-            continue
-        for fun in func[k]:
-            fun(i,j)
-print(cnt)
-
-
-
-
+dp = [[[0,0,0] for _ in range(N)]for _ in range(N)]
+func = [width,length,diagonal]
+dp[0][1][0] = 1 # dp초기화
+for i in range(N):
+    for j in range(N):
+        for k in range(3):
+            if k!= 2 and (dp[i][j][k] or dp[i][j][2]): # 가로라면 가로만, 세로라면 세로만 혹은 대각으로 들어옴
+                func[k](i,j)
+            elif k == 2 and sum(dp[i][j]): # 어느 방향으로든 들어오기는 함
+                func[k](i,j)
+print(sum(dp[-1][-1]))
