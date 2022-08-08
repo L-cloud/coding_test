@@ -1,7 +1,7 @@
 from collections import deque
 N = int(input())
 dp,cnt = [True] * (N+1),0
-for i in range(2,N // 2):
+for i in range(2,N // 2+1):
     num = 2
     if dp[i]:
         while i * num < N +1:
@@ -16,4 +16,4 @@ for decimal in decimals:
         q.popleft()
     if sum(q) == N:
         cnt += 1
-print(cnt) 
+print(cnt)
