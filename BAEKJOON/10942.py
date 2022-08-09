@@ -1,19 +1,17 @@
 import sys
+input = sys.stdin.readline
 
-str_len = sys.stdin.readline()
+N = int(input())
+nums = list(map(int, input().split()))
+dp = [[1 if i == j  else 0 for j in range(N)]for i in range(N)]
 
-str_ = list(sys.stdin.readline().split())
-for _ in range(int(sys.stdin.readline())):
-    start, end = map(int, sys.stdin.readline().split())
-    palindrome = True
-    while start <= end:
-        if str_[start - 1] != str_[end - 1]:
-            palindrome = False
-            break
-        start += 1
-        end -= 1
-
-    if palindrome:
-        print(1)
-    else:
-        print(0)
+for i in range(N-1):
+    if nums[i] == nums[i+1]:
+        dp[i][i + 1] = 1
+for i in range(2, N):
+    for j in range(N-i):
+        if nums[j] == nums[i+j] and dp[j+1][i+j-1] == 1:
+            dp[j][j+i] = 1
+for _ in range(int(input())):
+    a, b = map(int, input().split())
+    print(dp[a-1][b-1])
