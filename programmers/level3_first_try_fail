@@ -1,0 +1,33 @@
+# 1번
+from collections import defaultdict
+from heapq import heappop,heappush
+def solution(n, edge):
+    answer = 0
+    costs = [20001 for _ in range(n)]
+    costs[0]=0
+    matrix = defaultdict(list)
+    for n1,n2 in edge:
+        matrix[n1-1].append(n2-1)
+        matrix[n2-1].append(n1-1)
+    h = [(1,node) for node in matrix[0]]
+    while h:
+        cost, node = heappop(h)
+        if cost < costs[node] :
+            costs[node] = cost
+            for n1 in matrix[node]:
+                if 1 + cost < costs[n1]:
+                    heappush(h,((1+cost,n1)))
+    max_cost = max(costs)
+    return sum([1 if i == max_cost else 0 for i in costs])
+
+
+# 2번
+from heapq import heappop,heappush,heapify
+def solution(n, times):
+    h,answer= [(times[i],i) for i in range(len(times))],0
+    heapify(h)
+    for _ in range(n):
+        t,index = heappop(h)
+        answer = t
+        heappush(h,(t+times[index],index))
+    return answer
