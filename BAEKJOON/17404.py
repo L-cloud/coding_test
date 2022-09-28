@@ -1,33 +1,26 @@
-import sys
 from typing import List
-class Price:
-    def __init__(self):
-        self.min_price = float('inf')
-def dfs(start_color : int, color : int, price : int, price_class :Price ,house: List[int]) -> None:
-    if len(house) == 1:
-        if start_color == color:
-            return
-        price += house[0][color]
-        price_class.min_price = min(price, price_class.min_price)
-        return
-    if color == 0:
-        dfs(start_color,1,price + house[0][0], price_class, house[1:])
-        dfs(start_color, 2, price + house[0][0], price_class, house[1:])
-    if color == 1:
-        dfs(start_color, 0, price + house[0][1], price_class, house[1:])
-        dfs(start_color, 2, price + house[0][1], price_class, house[1:])
-    if color == 2:
-        dfs(start_color, 1, price + house[0][2], price_class, house[1:])
-        dfs(start_color, 0, price + house[0][2], price_class, house[1:])
+import sys
+input = sys.stdin.readline
+def check(dp:List[List[int]],index:int) -> int:
+    for i in range(1,len(dp)): 
+        if i == 1:
+            dp[i][index] = float('inf') # 선택 못 하게
+            dp[i][(index+1)%3] += dp[0][0] # 다 동일
+            dp[i][(index+2)%3] += dp[0][0]
+        elif i == len(dp) - 1:
+            dp[i][(index+1)%3] += min(dp[i-1][(index+2)%3],dp[i-1][index]) 
+            dp[i][(index+2)%3] += min(dp[i-1][index],dp[i-1][(index+1)%3])
+        else:
+            dp[i][0] += min(dp[i-1][1],dp[i-1][2])
+            dp[i][1] += min(dp[i-1][0],dp[i-1][2])
+            dp[i][2] += min(dp[i-1][0],dp[i-1][1])
+    return min(dp[-1])
 
-houses = []
+N = int(input())
+dp = [list(map(int,input().split())) for _ in range(N)]
+dp1 = [dp[i][:] if i != 0 else [dp[0][0]] * 3 for i in range(N)]
+dp2 = [dp[i][:] if i != 0 else [dp[0][1]] * 3 for i in range(N)]
+dp3 = [dp[i][:] if i != 0 else [dp[0][2]] * 3 for i in range(N)]
+dp1[-1][0],dp2[-1][1],dp3[-1][2] = float('inf'),float('inf'),float('inf')
+print (min(check(dp1,0),check(dp2,1),check(dp3,2)))
 
-for _ in range(int(sys.stdin.readline())):
-    houses.append(list(map(int, sys.stdin.readline().split())))
-
-price_class = Price()
-dfs(0, 0, 0, price_class,houses)
-dfs(1, 1, 0, price_class,houses)
-dfs(2, 2, 0, price_class,houses)
-
-print(price_class.min_price)
