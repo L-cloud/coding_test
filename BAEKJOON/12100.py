@@ -1,114 +1,47 @@
-# 한 번의 이동에서 이미합쳐진 블록은 또 다른 블록과 다시 합쳐질 수 없다.
-
-# 400 * 2**10 102400 40만 흐음 # 달라진거 있으면 다음꺼로 넘김 
-
-# origin을 일단 복사 해야겠지? 중복 처리도 해줘야함 일단 그냥 해보자
-
-
-import sys
-import tabnanny
+# 상하좌우 네 방향 중 하나로 이동
+# 같은 값 = 합쳐짐
+# 한 번 이동 합쳐진 블록 다시 합체 x 
+# 최대 5번 이동해서 만들 수 있는 가장 큰 블록의 값
+# 블록은 2의 제곱 꼴
+# 최대 5번 이동
+# 그냥 구현?
+import sys,copy
 from typing import List
-import copy
 input = sys.stdin.readline
 N = int(input())
 matrix = [list(map(int,input().split())) for _ in range(N)]
-answer = 0
-# 이거 잘못하면 시간초과다.
-def left(matrix:List[List[int]])->bool:
-    global answer
-    v = set() # 합쳐지는 배열 선택
-    max_num = 0 
-    flag= False
-    for i in range(len(matrix)):
-        for j in range(1,len(matrix)):
-            t = matrix[i][j]
-            if t:
-                while 0 < j and not matrix[i][j -1]:
-                    matrix[i][j] = 0
-                    j -= 1  
-                    matrix[i][j] = t
-                    flag = True
-                if  0< j and matrix[i][j-1] == t and (i,j-1) not in v:
-                    v.add((i,j-1)) 
-                    matrix[i][j] = 0
-                    matrix[i][j-1] *= 2
-                    max_num = max(max_num,matrix[i][j-1])
-    answer  = max(answer, max_num)
-    return flag  # 바뀌었는지 안 바뀌었는지 확인
-                
-def up(matrix:List[List[int]]) -> bool:
-    global answer
-    v = set() # 합쳐지는 배열 선택
-    flag = False
-    max_num = 0 
-    for i in range(1,len(matrix)):
-        for j in range(len(matrix)):
-            t = matrix[i][j]
-            if t:
-                while 0 < i and not matrix[i -1][j]:
-                    matrix[i][j] = 0
-                    i -= 1  
-                    matrix[i][j] = t
-                    flag = True
-                if  0 < i and  matrix[i-1][j] == t and (i-1,j) not in v:
-                    v.add((i-1,j)) 
-                    matrix[i][j] = 0
-                    matrix[i-1][j] *= 2
-                    max_num = max(max_num,matrix[i-1][j])
-    answer  = max(answer, max_num)
-    return flag  
-
-def down(matrix:List[List[int]]) -> bool:
-    global answer 
-    v = set() # 합쳐지는 배열 선택
-    flag = False
-    max_num = 0 
-    for i in range(len(matrix)-2,-1,-1):
-        for j in range(len(matrix)):
-            t = matrix[i][j]
-            if t:
-                while i < len(matrix) -1 and not matrix[i+1][j]:
-                    matrix[i][j] = 0
-                    i += 1
-                    matrix[i][j] = t
-                    flag = True
-                if i < len(matrix) - 1 and matrix[i+1][j] == t and (i+1,j) not in v:
-                    v.add((i+1,j))
-                    matrix[i][j] = 0
-                    matrix[i+1][j] *= 2
-                    max_num = max(max_num,matrix[i+1][j])
-    answer  = max(answer, max_num)
-    return flag
-
-def right(matrix:List[List[int]]) -> bool:
-    global answer
-    v = set()
-    flag = False
-    max_num = 0
-    for i in range(len(matrix)):
-        for j in range(len(matrix)-2,-1,-1):
-            t = matrix[i][j]
-            if t:
-                while j < len(matrix) -1 and not matrix[i][j+1]:
-                    matrix[i][j] = 0
-                    j += 1
-                    matrix[i][j] = t
-                    flag = True
-                if j < len(matrix) -1 and matrix[i][j+1] == t and (i,j+1) not in v:
-                    v.add((i,j+1))
-                    matrix[i][j] = 0
-                    matrix[i][j+1] *= 2
-                    max_num = max(max_num,matrix[i][j+1])
-    answer = max(answer, max_num)
-    return flag
-
-func = {0:right,1:down,2:left,3:up}
-def dfs(matrix:List[List[int]], cnt:int) -> None:
-    if 5 < cnt:
-        return 
-    for i in range(4):
-        t = copy.deepcopy(matrix)
-        if func[i](t) :
-            dfs(t,cnt + 1)
+ans = max(matrix[i][j] for j in range(N) for i in range(N))
+mat_order  = [[[i for i in range(N)],[i for i in range(N)]], [[i for i in range(N-1,-1,-1)],[i for i in range(N)]],
+                [[i for i in range(N)],[i for i in range(N)]], [[i for i in range(N)],[i for  i in range(N-1,-1,-1)]]]
+move_order = [[-1,0],[1,0],[0,-1],[0,1]]
+visited = {}
+def dfs(matrix:List[List[int]],cnt : int):
+    for k in range(4):
+        v = set()
+        m  = copy.deepcopy(matrix)
+        flag = False # 변화 하였는가
+        dx,dy = move_order[k][0],move_order[k][1]
+        for i in mat_order[k][0]:
+            for j in mat_order[k][1]:
+                x,y = i,j
+                if  matrix[i][j]:
+                    while 0<=x+dx<len(m) and 0<=y+dy<len(m) and not m[x+dx][y+dy]:
+                        m[x][y] = 0
+                        x += dx
+                        y += dy
+                        m[x][y] = matrix[i][j]
+                        flag = True
+                    if 0<=x+dx<len(m) and 0<=y+dy<len(m) and (x+dx, y+dy) not in v and m[x+dx][y+dy] == matrix[i][j]:
+                        m[x][y] = 0
+                        m[x+dx][y+dy] *= 2
+                        flag = True
+                        global ans
+                        ans = max(ans,m[x+dx][y+dy])
+                        v.add((x+dx,y+dy))
+        if flag and cnt < 5:
+            tempt = tuple(tuple(m[i]) for i in range(len(m)))
+            if tempt not in visited or cnt + 1 < visited[tempt] :
+                visited[tempt] = cnt + 1
+                dfs(m,cnt + 1)
 dfs(matrix,1)
-print(answer)
+print(ans)
