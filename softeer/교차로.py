@@ -1,5 +1,4 @@
 import sys
-from heapq import heappop
 from collections import OrderedDict
 input = sys.stdin.readline
 def check(a:str) -> str:
@@ -7,13 +6,13 @@ def check(a:str) -> str:
     return d[a]
 N = int(input())
 p,v = [-1] * N,{"A":0,"B":0, "C":0,"D":0}
-q = [(i,tuple(input().split()))for i in range(N)]
+q = [(i,tuple(input().split()))for i in range(N)][::-1]
 
-time = int(q[0][1][0])
+time = int(q[-1][1][0])
 t = OrderedDict()
 while q:
-    while q and int(q[0][1][0]) <= time:
-        index,node = heappop(q)
+    while q and int(q[-1][1][0]) <= time:
+        index,node = q.pop()
         t.update({node:index})
         v[node[1]] += 1
     while t:
@@ -30,9 +29,9 @@ while q:
             v[k[1]] -= 1
             del t[k]
         time += 1
-        while q and int(q[0][1][0]) <= time:
-            index,node = heappop(q)
+        while q and int(q[-1][1][0]) <= time:
+            index,node = q.pop()
             t.update({node:index})
             v[node[1]] += 1
-    time = max(time,int(q[0][1][0])) if q else 0
+    time = max(time,int(q[-1][1][0])) if q else 0
 print('\n'.join([str(i) for i in p]))
